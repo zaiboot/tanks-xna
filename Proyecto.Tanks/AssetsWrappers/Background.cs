@@ -12,6 +12,9 @@ namespace Proyecto.Tanks.AssetsWrappers
     /// </summary>
     public class Background : BaseAsset
     {
+
+        public Color[,] backgroundColorArray;
+        
         /// <summary>
         /// The game that we are running
         /// </summary>
@@ -68,10 +71,6 @@ namespace Proyecto.Tanks.AssetsWrappers
             // and the flatness, so wave 3 will be lower and shorter than waves 1 and 2. Furthermore, you see we’re also adding the random values inside
             // the Sine method. Otherwise, all 3 waves would start exactly at the Y coordinate specified by ‘offset’, making this point fixed each time
             // we would restart the game.
-            
-            
-            
-
 
             for (int x = 0; x < width; x++)
             {
@@ -106,6 +105,7 @@ namespace Proyecto.Tanks.AssetsWrappers
             }
             backgroundShape.SetData(backgroundData);
 
+            backgroundColorArray = Utils.TextureTo2DArray(backgroundShape);
 
             //Here we need to calculate the convex hull for this one also update it every time
             //that the background is hit by a bullet, since we it will change all.
