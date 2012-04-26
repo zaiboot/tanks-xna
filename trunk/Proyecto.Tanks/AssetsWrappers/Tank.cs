@@ -26,8 +26,13 @@ namespace Proyecto.Tanks.AssetsWrappers
         /// <summary>
         /// Represents a single bullet
         /// </summary>
-        private class Bullet
+        public class Bullet
         {
+            /// <summary>
+            /// The Color array of the bullet image
+            /// </summary>
+            internal Color[,] bulletColorArray;
+
             /// <summary>
             /// The image of the bullet to draw
             /// </summary>
@@ -63,7 +68,7 @@ namespace Proyecto.Tanks.AssetsWrappers
             /// <summary>
             /// Defines if the bullet is visible
             /// </summary>
-            public bool IsBulletVisible { get; private set; }
+            public bool IsBulletVisible { get; set; }
 
             /// <summary>
             /// Moves the bullet by using the direction, speed in this class
@@ -151,9 +156,12 @@ namespace Proyecto.Tanks.AssetsWrappers
         #endregion
 
         #region MOVEMENT
-        private bool canMove = true;
-        private Bullet myBullet = new Bullet();
-        private Vector2 tankPosition;
+        public bool canMove = true;
+        public bool terrainCollision = false;
+        public float tankRotationAngle;
+        public Bullet myBullet = new Bullet();
+        public Vector2 tankPosition;
+        public Color[,] tankColorArray;
 
         /// <summary>
         /// Returns the tankPosition of this tank.
@@ -192,6 +200,9 @@ namespace Proyecto.Tanks.AssetsWrappers
         {
             tank = content.Load<Texture2D>(assetName);
             myBullet.bullet = content.Load<Texture2D>(bulletAssetName);
+
+            tankColorArray = Utils.TextureTo2DArray(tank);
+            myBullet.bulletColorArray = Utils.TextureTo2DArray(myBullet.bullet);
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
@@ -208,7 +219,6 @@ namespace Proyecto.Tanks.AssetsWrappers
                 //Shoot only one bullet at the time
                 if (pressedKeys.Contains(FIRE_KEY))
                 {
-
                     myBullet.Start(this);
                 }
             }
@@ -223,12 +233,14 @@ namespace Proyecto.Tanks.AssetsWrappers
                     if (currentOrientation != Orientation.DOWN)
                     {
                         //Down key, rotate it if necessary and move it down in the next frame
+                        tankRotationAngle = MathHelper.PiOver2;
                         spriteToDraw.X = 147;
                         currentOrientation = Orientation.DOWN;
+                        terrainCollision = false;
                     }
                     else
                     {
-                        if (tankPosition.Y < owner.Window.ClientBounds.Height - 53)
+                        if (tankPosition.Y < owner.Window.ClientBounds.Height - 53 && !terrainCollision)
                         {
                             //Make the tank move down.
                             tankPosition.Y += tankSpeed;
@@ -242,13 +254,15 @@ namespace Proyecto.Tanks.AssetsWrappers
                     if (currentOrientation != Orientation.UP)
                     {
                         //Down key, rotate it if necessary and move it down in the next frame
+                        tankRotationAngle = MathHelper.PiOver2 * -1;
                         spriteToDraw.X = 96;
                         currentOrientation = Orientation.UP;
+                        terrainCollision = false;
                     }
                     else
                     {
                         //Make the tank move up.
-                        if (tankPosition.Y > tankSpeed)
+                        if (tankPosition.Y > tankSpeed && !terrainCollision)
                         {
                             // avoid the out of bounds.
                             tankPosition.Y -= tankSpeed;
@@ -263,13 +277,15 @@ namespace Proyecto.Tanks.AssetsWrappers
                     if (currentOrientation != Orientation.LEFT)
                     {
                         //Down key, rotate it if necessary and move it down in the next frame
+                        tankRotationAngle = MathHelper.Pi;//180 Degrees
                         spriteToDraw.X = 48;
                         currentOrientation = Orientation.LEFT;
+                        terrainCollision = false;
                     }
                     else
                     {
                         //Make the tank move left.
-                        if (tankPosition.X > tankSpeed)
+                        if (tankPosition.X > tankSpeed && !terrainCollision)
                         {
                             tankPosition.X -= tankSpeed;
                             tankMoved = true;
@@ -283,14 +299,16 @@ namespace Proyecto.Tanks.AssetsWrappers
                     if (currentOrientation != Orientation.RIGHT)
                     {
                         //Down key, rotate it if necessary and move it down in the next frame
+                        tankRotationAngle = 0;//
                         spriteToDraw.X = 0;
                         currentOrientation = Orientation.RIGHT;
+                        terrainCollision = false;
                     }
                     else
                     {
 
                         //Make the tank move right.
-                        if (tankPosition.X < owner.Window.ClientBounds.Width - 53)
+                        if (tankPosition.X < owner.Window.ClientBounds.Width - 53 && !terrainCollision)
                         {
                             tankPosition.X += tankSpeed;
                             tankMoved = true;
