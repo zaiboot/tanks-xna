@@ -13,7 +13,14 @@ namespace Proyecto.Tanks.AssetsWrappers
     public class Background : BaseAsset
     {
         public int[,] terrainContour;
+        /// <summary>
+        /// The width of the game
+        /// </summary>
         public int width;
+
+        /// <summary>
+        /// The height of the game
+        /// </summary>
         public int height;
 
         private Game owner;
@@ -79,23 +86,30 @@ namespace Proyecto.Tanks.AssetsWrappers
 
             for (int x = 0; x < width; x++)
             {
+
                 for (int y = 0; y < height; y++)
                 {
                     if ((x < 60 && y < 60) || (x > width - 60 && y < 60) || (x < 60 && y > height - 60) || (x > width - 60 && y > height - 60))
                     {
-                        terrainContour[x, y] = 1000;
+
+                        terrainContour[x, y] =  1000;
                     }
                 }
             }
+            //Generates random wholes on the foreground.
+            int numberOfHoles = randomizer.Next(5, 100);
+            int holeWidth = randomizer.Next(60, 100);
+            int holeHeight = holeWidth;
 
-            for (int i = 0; i < 100; i++)
+            for (int singleHole = 0; singleHole < numberOfHoles; singleHole++)
             {
+                //Random positions where to place the holes.
                 int xRandom = randomizer.Next(0, width - 60);
                 int yRandom = randomizer.Next(0, height - 60);
-
-                for (int x = xRandom; x < xRandom + 60; x++)
+                
+                for (int x = xRandom; x < xRandom + holeWidth && x < width ; x++)
                 {
-                    for (int y = yRandom; y < yRandom + 60; y++)
+                    for (int y = yRandom; y < (yRandom + holeHeight)  && y < height ; y++)
                     {
                         terrainContour[x, y] = 1000;
                     }
