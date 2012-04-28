@@ -25,8 +25,8 @@ namespace Proyecto.Tanks.AssetsWrappers
 
         private Game owner;
 
-        Texture2D explosionTexture;
-        Color[,] explosionColorArray;
+        public Texture2D explosionTexture;
+        public Color[,] explosionColorArray;
         List<ParticleData> particleList = new List<ParticleData>();
 
         Random randomizer = new Random();
@@ -52,20 +52,20 @@ namespace Proyecto.Tanks.AssetsWrappers
 
         public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)
         {
-          
+
         }
 
-        public void DrawExplosion (Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)
+        public void DrawExplosion(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
-            
+
             for (int i = 0; i < particleList.Count; i++)
             {
                 ParticleData particle = particleList[i];
                 spriteBatch.Draw(explosionTexture, particle.Position, null, particle.ModColor, i, new Vector2(256, 256), particle.Scaling, SpriteEffects.None, 1);
 
             }
-            
+
             spriteBatch.End();
         }
 
@@ -122,15 +122,16 @@ namespace Proyecto.Tanks.AssetsWrappers
             }
         }
 
-        public void AddExplosion(Vector2 explosionPos, int numberOfParticles, float size, float maxAge, GameTime gameTime)
+        public Matrix AddExplosion(Vector2 explosionPos, int numberOfParticles, float size, float maxAge, GameTime gameTime)
         {
             for (int i = 0; i < numberOfParticles; i++)
                 AddExplosionParticle(explosionPos, size, maxAge, gameTime);
 
             float rotation = (float)randomizer.Next(10);
 
-            Matrix mat = Matrix.CreateTranslation(-explosionTexture.Width / 2, -explosionTexture.Height / 2, 0) * Matrix.CreateRotationZ(rotation) * Matrix.CreateScale(size / (float)explosionTexture.Width * 2.0f) * Matrix.CreateTranslation(explosionPos.X, explosionPos.Y, 0);
+            return Matrix.CreateTranslation(-explosionTexture.Width / 2, -explosionTexture.Height / 2, 0) * Matrix.CreateRotationZ(rotation) * Matrix.CreateScale(size / (float)explosionTexture.Width * 2.0f) * Matrix.CreateTranslation(explosionPos.X, explosionPos.Y, 0);
         }
+
 
     }
 }
