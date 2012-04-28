@@ -149,6 +149,7 @@ namespace Proyecto.Tanks.AssetsWrappers
         private Color tankColor;
         private Texture2D tank;
         private Rectangle spriteToDraw;
+        public bool isAlive;
         /// <summary>
         /// The direction of the tank.
         /// </summary>
@@ -168,7 +169,7 @@ namespace Proyecto.Tanks.AssetsWrappers
         /// </summary>
         public IList<Vector2> TankBoundaries { get; private set; }
         private ushort tankSpeed = 3;//the speed of the tank. 
-        private PlayerIndex playerIndex;
+        public PlayerIndex playerIndex;
         #endregion
 
         private Game owner;
@@ -188,7 +189,7 @@ namespace Proyecto.Tanks.AssetsWrappers
             TankBoundaries = new List<Vector2>();
             spriteToDraw = new Rectangle(0, 0, 46, 48);
             explosion = new Explosion(owner);
-
+            isAlive = true;
 
             this.playerIndex = playerIndex;
             this.owner = owner;
@@ -236,13 +237,13 @@ namespace Proyecto.Tanks.AssetsWrappers
 
             tankColorArray = Utils.TextureTo2DArray(tank);
             myBullet.bulletColorArray = Utils.TextureTo2DArray(myBullet.bullet);
-			explosion.LoadResources(content);            //The size needs to be loaded here, since if it loads in the ctor it will
+            explosion.LoadResources(content);            //The size needs to be loaded here, since if it loads in the ctor it will
             //not be set up correctly.
             int width = owner.Window.ClientBounds.Width;
             int height = owner.Window.ClientBounds.Height;
             //One two three four
             //http://www.youtube.com/watch?v=BzZtU2jFs7g
-            
+
             switch (playerIndex)
             {
                 case PlayerIndex.One:
@@ -272,117 +273,119 @@ namespace Proyecto.Tanks.AssetsWrappers
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            var keyStroke = Keyboard.GetState();
-            Keys[] pressedKeys = keyStroke.GetPressedKeys();
-            bool tankMoved = false;
-            if (myBullet.IsBulletVisible) //we gotta move the bullet
+            if (isAlive)
             {
-                myBullet.Move(owner.Window.ClientBounds);
-            }
-            else
-            {
-                //Shoot only one bullet at the time
-                if (pressedKeys.Contains(FIRE_KEY))
+                var keyStroke = Keyboard.GetState();
+                Keys[] pressedKeys = keyStroke.GetPressedKeys();
+                bool tankMoved = false;
+                if (myBullet.IsBulletVisible) //we gotta move the bullet
                 {
-                    myBullet.Start(this);
+                    myBullet.Move(owner.Window.ClientBounds);
                 }
-            }
-
-
-            if (canMove)
-            {
-                //the tank can move freely
-
-                if (pressedKeys.Contains(DOWN_KEY))
+                else
                 {
-                    if (currentOrientation != Orientation.DOWN)
+                    //Shoot only one bullet at the time
+                    if (pressedKeys.Contains(FIRE_KEY))
                     {
-                        //Down key, rotate it if necessary and move it down in the next frame
-                        tankRotationAngle = MathHelper.PiOver2;
-                        spriteToDraw.X = 147;
-                        currentOrientation = Orientation.DOWN;
-                        terrainCollision = false;
+                        myBullet.Start(this);
                     }
-                    else
+                }
+                //Update only if tank is alive
+
+                if (canMove)
+                {
+                    //the tank can move freely
+                    if (pressedKeys.Contains(DOWN_KEY))
                     {
-                        if (tankPosition.Y < owner.Window.ClientBounds.Height - 53 && !terrainCollision)
+                        if (currentOrientation != Orientation.DOWN)
                         {
-                            //Make the tank move down.
-                            tankPosition.Y += tankSpeed;
-                            tankMoved = true;
+                            //Down key, rotate it if necessary and move it down in the next frame
+                            tankRotationAngle = MathHelper.PiOver2;
+                            spriteToDraw.X = 147;
+                            currentOrientation = Orientation.DOWN;
+                            terrainCollision = false;
+                        }
+                        else
+                        {
+                            if (tankPosition.Y < owner.Window.ClientBounds.Height - 53 && !terrainCollision)
+                            {
+                                //Make the tank move down.
+                                tankPosition.Y += tankSpeed;
+                                tankMoved = true;
+                            }
                         }
                     }
-                }
 
-                if (pressedKeys.Contains(UP_KEY))
-                {
-                    if (currentOrientation != Orientation.UP)
+                    if (pressedKeys.Contains(UP_KEY))
                     {
-                        //Down key, rotate it if necessary and move it down in the next frame
-                        tankRotationAngle = MathHelper.PiOver2 * -1;
-                        spriteToDraw.X = 96;
-                        currentOrientation = Orientation.UP;
-                        terrainCollision = false;
-                    }
-                    else
-                    {
-                        //Make the tank move up.
-                        if (tankPosition.Y > tankSpeed && !terrainCollision)
+                        if (currentOrientation != Orientation.UP)
                         {
-                            // avoid the out of bounds.
-                            tankPosition.Y -= tankSpeed;
-                            tankMoved = true;
+                            //Down key, rotate it if necessary and move it down in the next frame
+                            tankRotationAngle = MathHelper.PiOver2 * -1;
+                            spriteToDraw.X = 96;
+                            currentOrientation = Orientation.UP;
+                            terrainCollision = false;
                         }
-
-                    }
-                }
-
-                if (pressedKeys.Contains(LEFT_KEY))
-                {
-                    if (currentOrientation != Orientation.LEFT)
-                    {
-                        //Down key, rotate it if necessary and move it down in the next frame
-                        tankRotationAngle = MathHelper.Pi;//180 Degrees
-                        spriteToDraw.X = 48;
-                        currentOrientation = Orientation.LEFT;
-                        terrainCollision = false;
-                    }
-                    else
-                    {
-                        //Make the tank move left.
-                        if (tankPosition.X > tankSpeed && !terrainCollision)
+                        else
                         {
-                            tankPosition.X -= tankSpeed;
-                            tankMoved = true;
-                        }
+                            //Make the tank move up.
+                            if (tankPosition.Y > tankSpeed && !terrainCollision)
+                            {
+                                // avoid the out of bounds.
+                                tankPosition.Y -= tankSpeed;
+                                tankMoved = true;
+                            }
 
-                    }
-                }
-
-                if (pressedKeys.Contains(RIGHT_KEY))
-                {
-                    if (currentOrientation != Orientation.RIGHT)
-                    {
-                        //Down key, rotate it if necessary and move it down in the next frame
-                        tankRotationAngle = 0;//
-                        spriteToDraw.X = 0;
-                        currentOrientation = Orientation.RIGHT;
-                        terrainCollision = false;
-                    }
-                    else
-                    {
-
-                        //Make the tank move right.
-                        if (tankPosition.X < owner.Window.ClientBounds.Width - 53 && !terrainCollision)
-                        {
-                            tankPosition.X += tankSpeed;
-                            tankMoved = true;
                         }
                     }
-                }
-                if (tankMoved)
-                {
-                    UpdateTankBoundaries();
+
+                    if (pressedKeys.Contains(LEFT_KEY))
+                    {
+                        if (currentOrientation != Orientation.LEFT)
+                        {
+                            //Down key, rotate it if necessary and move it down in the next frame
+                            tankRotationAngle = MathHelper.Pi;//180 Degrees
+                            spriteToDraw.X = 48;
+                            currentOrientation = Orientation.LEFT;
+                            terrainCollision = false;
+                        }
+                        else
+                        {
+                            //Make the tank move left.
+                            if (tankPosition.X > tankSpeed && !terrainCollision)
+                            {
+                                tankPosition.X -= tankSpeed;
+                                tankMoved = true;
+                            }
+
+                        }
+                    }
+
+                    if (pressedKeys.Contains(RIGHT_KEY))
+                    {
+                        if (currentOrientation != Orientation.RIGHT)
+                        {
+                            //Down key, rotate it if necessary and move it down in the next frame
+                            tankRotationAngle = 0;//
+                            spriteToDraw.X = 0;
+                            currentOrientation = Orientation.RIGHT;
+                            terrainCollision = false;
+                        }
+                        else
+                        {
+
+                            //Make the tank move right.
+                            if (tankPosition.X < owner.Window.ClientBounds.Width - 53 && !terrainCollision)
+                            {
+                                tankPosition.X += tankSpeed;
+                                tankMoved = true;
+                            }
+                        }
+                    }
+                    if (tankMoved)
+                    {
+                        UpdateTankBoundaries();
+                    }
                 }
             }
 
@@ -401,14 +404,18 @@ namespace Proyecto.Tanks.AssetsWrappers
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(tank, tankPosition, spriteToDraw, tankColor);
+            //Draw only if tank is alive
+            if (isAlive)
+            {
+                spriteBatch.Draw(tank, tankPosition, spriteToDraw, tankColor);
+            }
+
 
             if (myBullet.IsBulletVisible)
             {
                 spriteBatch.Draw(myBullet.bullet, myBullet.bulletPosition, null, tankColor, myBullet.rotationAngle, myBullet.rotationPoint, SpriteEffects.None, 0f);
             }
         }
-
 
         internal void StopMoving(bool stopMoving)
         {
