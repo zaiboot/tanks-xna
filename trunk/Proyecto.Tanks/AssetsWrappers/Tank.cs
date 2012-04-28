@@ -168,6 +168,7 @@ namespace Proyecto.Tanks.AssetsWrappers
         /// </summary>
         public IList<Vector2> TankBoundaries { get; private set; }
         private ushort tankSpeed = 3;//the speed of the tank. 
+        private PlayerIndex playerIndex;
         #endregion
 
         private Game owner;
@@ -181,20 +182,49 @@ namespace Proyecto.Tanks.AssetsWrappers
         private Keys FIRE_KEY;
         #endregion
 
-        public Tank(Game owner)
+        public Tank(Game owner, PlayerIndex playerIndex)
         {
             Random r = new Random(owner.TargetElapsedTime.Milliseconds);
             TankBoundaries = new List<Vector2>();
             spriteToDraw = new Rectangle(0, 0, 46, 48);
-            tankPosition = new Vector2(0, 0);
             explosion = new Explosion(owner);
 
+
+            this.playerIndex = playerIndex;
             this.owner = owner;
-            DOWN_KEY = Keys.Down;
-            UP_KEY = Keys.Up;
-            LEFT_KEY = Keys.Left;
-            RIGHT_KEY = Keys.Right;
-            FIRE_KEY = Keys.LeftControl;
+            //Set up the keys per player
+            switch (this.playerIndex)
+            {
+                case PlayerIndex.Four:
+                    DOWN_KEY = Keys.K;
+                    UP_KEY = Keys.I;
+                    LEFT_KEY = Keys.J;
+                    RIGHT_KEY = Keys.L;
+                    FIRE_KEY = Keys.Enter;
+                    break;
+                case PlayerIndex.One:
+                    DOWN_KEY = Keys.Down;
+                    UP_KEY = Keys.Up;
+                    LEFT_KEY = Keys.Left;
+                    RIGHT_KEY = Keys.Right;
+                    FIRE_KEY = Keys.NumPad0;
+                    break;
+                case PlayerIndex.Three:
+                    DOWN_KEY = Keys.NumPad2;
+                    UP_KEY = Keys.NumPad8;
+                    LEFT_KEY = Keys.NumPad4;
+                    RIGHT_KEY = Keys.NumPad6;
+                    FIRE_KEY = Keys.PageDown;
+                    break;
+                case PlayerIndex.Two:
+                    DOWN_KEY = Keys.S;
+                    UP_KEY = Keys.W;
+                    LEFT_KEY = Keys.A;
+                    RIGHT_KEY = Keys.D;
+                    FIRE_KEY = Keys.LeftControl;
+                    break;
+            }
+
             tankColor = Color.FromNonPremultiplied(r.Next(0, 255), r.Next(0, 255), r.Next(0, 255), 255);
 
         }
@@ -206,8 +236,38 @@ namespace Proyecto.Tanks.AssetsWrappers
 
             tankColorArray = Utils.TextureTo2DArray(tank);
             myBullet.bulletColorArray = Utils.TextureTo2DArray(myBullet.bullet);
-
-            explosion.LoadResources(content);
+			explosion.LoadResources(content);            //The size needs to be loaded here, since if it loads in the ctor it will
+            //not be set up correctly.
+            int width = owner.Window.ClientBounds.Width;
+            int height = owner.Window.ClientBounds.Height;
+            //One two three four
+            //http://www.youtube.com/watch?v=BzZtU2jFs7g
+            
+            switch (playerIndex)
+            {
+                case PlayerIndex.One:
+                    tankPosition = new Vector2(0, 0);
+                    currentOrientation = Orientation.RIGHT;
+                    break;
+                case PlayerIndex.Two:
+                    tankPosition = new Vector2(0, height - spriteToDraw.Height);
+                    currentOrientation = Orientation.UP;
+                    spriteToDraw.X += 48 * 2;
+                    break;
+                case PlayerIndex.Three:
+                    tankPosition = new Vector2(width - spriteToDraw.Width, 0);
+                    currentOrientation = Orientation.DOWN;
+                    spriteToDraw.X += 48 * 3;
+                    break;
+                case PlayerIndex.Four:
+                    tankPosition = new Vector2(width - spriteToDraw.Width, height - spriteToDraw.Height);
+                    currentOrientation = Orientation.LEFT;
+                    spriteToDraw.X += 48;
+                    break;
+                default:
+                    //WTF
+                    break;
+            }
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
@@ -322,7 +382,7 @@ namespace Proyecto.Tanks.AssetsWrappers
                 }
                 if (tankMoved)
                 {
-                    UpdateTankBoundaries(); 
+                    UpdateTankBoundaries();
                 }
             }
 
@@ -335,7 +395,7 @@ namespace Proyecto.Tanks.AssetsWrappers
             TankBoundaries.Add(tankPosition);
             for (int i = (int)tankPosition.X; i < tank.Width; i++)
             {
-                TankBoundaries.Add(new Vector2(i,1));
+                TankBoundaries.Add(new Vector2(i, 1));
             }
         }
 

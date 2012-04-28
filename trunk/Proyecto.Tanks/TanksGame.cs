@@ -21,15 +21,27 @@ namespace Proyecto.Tanks
         SpriteBatch spriteBatch;
         private List<BaseAsset> assetsToDraw = new List<BaseAsset>();
         private Tank singleTank;
+        private List<Tank> tanks;
         private Background obstacles;
         
-
+        private const int MAX_NUMBER_TANKS = 4;
 
         public TanksGame()
         {
+
+
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Assets";
-            singleTank = new Tank(this);
+            #region TANK_CREATION
+
+            tanks = new List<Tank>();
+            singleTank = new Tank(this, 0);
+            tanks.Add(singleTank);
+            for (int i = 1; i < MAX_NUMBER_TANKS; i++)
+            {
+                tanks.Add(new Tank(this, (PlayerIndex)i));
+            }
+            #endregion
             obstacles = new Background(this);
             
             assetsToDraw.Add(obstacles);
@@ -87,7 +99,7 @@ namespace Proyecto.Tanks
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
-            
+
             // TODO: Add your update logic here
             foreach (BaseAsset asset in assetsToDraw)
             {
@@ -96,7 +108,7 @@ namespace Proyecto.Tanks
 
 
             CheckCollisions(gameTime);
-            
+
 
             base.Update(gameTime);
         }
@@ -142,7 +154,7 @@ namespace Proyecto.Tanks
                 singleTank.terrainCollision = true;
             }
         }
-        
+
         private Vector2 TexturesCollide(Color[,] tex1, Matrix mat1, Color[,] tex2, Matrix mat2)
         {
             Matrix mat1to2 = mat1 * Matrix.Invert(mat2);
@@ -198,3 +210,4 @@ namespace Proyecto.Tanks
 
     }
 }
+
