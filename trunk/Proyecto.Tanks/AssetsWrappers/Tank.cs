@@ -185,7 +185,7 @@ namespace Proyecto.Tanks.AssetsWrappers
 
         public Tank(Game owner, PlayerIndex playerIndex)
         {
-            Random r = new Random(owner.TargetElapsedTime.Milliseconds);
+            Random r = new Random();
             TankBoundaries = new List<Vector2>();
             spriteToDraw = new Rectangle(0, 0, 46, 48);
             explosion = new Explosion(owner);
@@ -197,6 +197,7 @@ namespace Proyecto.Tanks.AssetsWrappers
             switch (this.playerIndex)
             {
                 case PlayerIndex.Four:
+                    tankColor = Color.DarkTurquoise;
                     DOWN_KEY = Keys.K;
                     UP_KEY = Keys.I;
                     LEFT_KEY = Keys.J;
@@ -204,6 +205,7 @@ namespace Proyecto.Tanks.AssetsWrappers
                     FIRE_KEY = Keys.Enter;
                     break;
                 case PlayerIndex.One:
+                    tankColor = Color.White;
                     DOWN_KEY = Keys.Down;
                     UP_KEY = Keys.Up;
                     LEFT_KEY = Keys.Left;
@@ -211,6 +213,7 @@ namespace Proyecto.Tanks.AssetsWrappers
                     FIRE_KEY = Keys.NumPad0;
                     break;
                 case PlayerIndex.Three:
+                    tankColor = Color.Black;
                     DOWN_KEY = Keys.NumPad2;
                     UP_KEY = Keys.NumPad8;
                     LEFT_KEY = Keys.NumPad4;
@@ -218,6 +221,7 @@ namespace Proyecto.Tanks.AssetsWrappers
                     FIRE_KEY = Keys.PageDown;
                     break;
                 case PlayerIndex.Two:
+                    tankColor = Color.Red;
                     DOWN_KEY = Keys.S;
                     UP_KEY = Keys.W;
                     LEFT_KEY = Keys.A;
@@ -226,7 +230,7 @@ namespace Proyecto.Tanks.AssetsWrappers
                     break;
             }
 
-            tankColor = Color.FromNonPremultiplied(r.Next(0, 255), r.Next(0, 255), r.Next(0, 255), 255);
+            
 
         }
 
