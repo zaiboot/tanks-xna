@@ -132,7 +132,6 @@ namespace Proyecto.Tanks
                 tank.explosion.DrawExplosion(spriteBatch);
             }
 
-            obstacles.CreateForeground();
 
             base.Draw(gameTime);
         }
@@ -159,9 +158,11 @@ namespace Proyecto.Tanks
                             Vector2 bulletTerrainCollisionPoint = CheckBulletTerrainCollision(playerTank.myBullet);
                             if (bulletTerrainCollisionPoint.X > -1)
                             {
+                                //Hit the background
                                 playerTank.myBullet.IsBulletVisible = false;
                                 Matrix mat = playerTank.explosion.AddExplosion(bulletTerrainCollisionPoint, 4, 30.0f, 1000.0f, gameTime);
                                 AddCrater(playerTank.explosion.explosionColorArray, mat);
+                                obstacles.CreateForeground();
                             }
 
                             Vector2 bulletTankCollisionPoint = CheckBulletTankCollision(playerTank);
@@ -244,7 +245,6 @@ namespace Proyecto.Tanks
 
             return new Vector2(-1, -1);
         }
-
 
         /// <summary>
         /// Checks if a bullte has been hit the ground.
