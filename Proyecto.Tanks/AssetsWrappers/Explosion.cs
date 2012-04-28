@@ -52,9 +52,7 @@ namespace Proyecto.Tanks.AssetsWrappers
 
         public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)
         {
-          //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
-          //  DrawExplosion(spriteBatch);
-          //spriteBatch.End();
+          
         }
 
         public void DrawExplosion (Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)

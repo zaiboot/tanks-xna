@@ -171,6 +171,8 @@ namespace Proyecto.Tanks.AssetsWrappers
         #endregion
 
         private Game owner;
+        public Explosion explosion;
+
         #region INTERACTION_KEYS
         private Keys DOWN_KEY;
         private Keys UP_KEY;
@@ -185,6 +187,7 @@ namespace Proyecto.Tanks.AssetsWrappers
             TankBoundaries = new List<Vector2>();
             spriteToDraw = new Rectangle(0, 0, 46, 48);
             tankPosition = new Vector2(0, 0);
+            explosion = new Explosion(owner);
 
             this.owner = owner;
             DOWN_KEY = Keys.Down;
@@ -203,6 +206,8 @@ namespace Proyecto.Tanks.AssetsWrappers
 
             tankColorArray = Utils.TextureTo2DArray(tank);
             myBullet.bulletColorArray = Utils.TextureTo2DArray(myBullet.bullet);
+
+            explosion.LoadResources(content);
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
@@ -320,8 +325,8 @@ namespace Proyecto.Tanks.AssetsWrappers
                     UpdateTankBoundaries(); 
                 }
             }
-            
 
+            explosion.Update(gameTime);
         }
 
         private void UpdateTankBoundaries()
