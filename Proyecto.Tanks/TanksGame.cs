@@ -20,7 +20,7 @@ namespace Proyecto.Tanks
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private List<BaseAsset> assetsToDraw = new List<BaseAsset>();
-        private Tank singleTank;
+        
         private List<Tank> tanks;
         private Background obstacles;
         
@@ -33,9 +33,8 @@ namespace Proyecto.Tanks
             #region TANK_CREATION
 
             tanks = new List<Tank>();
-            singleTank = new Tank(this, 0);
-            tanks.Add(singleTank);
-            for (int i = 1; i < MAX_NUMBER_TANKS; i++)
+            
+            for (int i = 0; i < MAX_NUMBER_TANKS; i++)
             {
                 tanks.Add(new Tank(this, (PlayerIndex)i));
             }
