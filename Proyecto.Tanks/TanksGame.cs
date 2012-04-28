@@ -147,7 +147,7 @@ namespace Proyecto.Tanks
                 if (tank.myBullet.IsBulletVisible)
                 {
                     //We do not need to check the collision only when the bullet is visible.
-                    Vector2 bulletTerrainCollisionPoint = CheckBulletTerrainCollision(tank);
+                    Vector2 bulletTerrainCollisionPoint = CheckBulletTerrainCollision(tank.myBullet);
                     if (bulletTerrainCollisionPoint.X > -1)
                     {
                         tank.myBullet.IsBulletVisible = false;
@@ -163,6 +163,13 @@ namespace Proyecto.Tanks
             }
         }
 
+        /// <summary>
+        /// Adds a crater to the background.
+        /// It needs to be a squared cracter, if not the tank might not be able to move, since it
+        /// will be colliding always.
+        /// </summary>
+        /// <param name="tex"></param>
+        /// <param name="mat"></param>
         private void AddCrater(Color[,] tex, Matrix mat)
         {
             int width = tex.GetLength(0);
@@ -172,7 +179,7 @@ namespace Proyecto.Tanks
             {
                 for (int y = 0; y < height; y++)
                 {
-                    if (tex[x, y].R > 10)
+                    if (tex[x, y].R > 0)
                     {
                         Vector2 imagePos = new Vector2(x, y);
                         Vector2 screenPos = Vector2.Transform(imagePos, mat);
@@ -224,12 +231,19 @@ namespace Proyecto.Tanks
             return new Vector2(-1, -1);
         }
 
-        private Vector2 CheckBulletTerrainCollision(Tank tank)
+
+        /// <summary>
+        /// Checks if a bullte has been hit the ground.
+        /// </summary>
+        /// <param name="bullet">The bullet to check if it hits the background</param>
+        /// <returns>
+        /// A vector 2, if the x contains -1 means no collision.
+        /// </returns>
+        private Vector2 CheckBulletTerrainCollision(Tank.Bullet bullet)
         {
-            Vector2 terrainCollisionPoint = new Vector2(-1, -1);
-            Matrix bulletMat = Matrix.CreateRotationZ(tank.myBullet.rotationAngle) * Matrix.CreateTranslation(tank.myBullet.bulletPosition.X, tank.myBullet.bulletPosition.Y, 0);
+            Matrix bulletMat = Matrix.CreateRotationZ(bullet.rotationAngle) * Matrix.CreateTranslation(bullet.bulletPosition.X, bullet.bulletPosition.Y, 0);
             Matrix obstaclesMat = Matrix.Identity;
-            terrainCollisionPoint = TexturesCollide(tank.myBullet.bulletColorArray, bulletMat, obstacles.backgroundColorArray, obstaclesMat);
+            Vector2 terrainCollisionPoint = TexturesCollide(bullet.bulletColorArray, bulletMat, obstacles.backgroundColorArray, obstaclesMat);
             return terrainCollisionPoint;
         }
 

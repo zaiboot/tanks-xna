@@ -58,7 +58,7 @@ namespace Proyecto.Tanks.AssetsWrappers
             /// <summary>
             /// How many pixels the bullet will move per iteration
             /// </summary>
-            private const int SPEED = 1;
+            private const int SPEED = 10;
 
             public Bullet()
             {
