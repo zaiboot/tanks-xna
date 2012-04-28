@@ -25,7 +25,10 @@ namespace Proyecto.Tanks
         private Background obstacles;
 
         private const int MAX_NUMBER_TANKS = 4;
-
+        private int tanksAlive = MAX_NUMBER_TANKS;
+        private bool GameEnd = false;
+        private Tank tankWinner = null;
+        private SpriteFont font;
         public TanksGame()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -72,7 +75,7 @@ namespace Proyecto.Tanks
             {
                 asset.LoadResources(Content);
             }
-
+            font = Content.Load<SpriteFont>("Courier New");
             // TODO: use this.Content to load your game content here
         }
 
@@ -106,7 +109,19 @@ namespace Proyecto.Tanks
 
             CheckCollisions(gameTime);
 
+            if (tanksAlive <= 1)
+            {
+                foreach (Tank singleTank in tanks)
+                {
+                    if (singleTank.isAlive)
+                    {
+                        tankWinner = singleTank;
+                        break;
 
+                    }
+                }
+                GameEnd = true;
+            }
             base.Update(gameTime);
         }
 
@@ -125,11 +140,19 @@ namespace Proyecto.Tanks
             {
                 asset.Draw(spriteBatch);
             }
-            spriteBatch.End();
 
+            //Someone won the game
+            if (this.GameEnd)
+            {
+                spriteBatch.DrawString(font, "You won the game", new Vector2(0, 0), tankWinner.tankColor);
+            }
+            spriteBatch.End();
             foreach (Tank tank in tanks)
             {
-                tank.explosion.DrawExplosion(spriteBatch);
+                if (tank.isAlive)
+                {
+                    tank.explosion.DrawExplosion(spriteBatch);
+                }
             }
 
 
@@ -281,12 +304,13 @@ namespace Proyecto.Tanks
                     int xPos = (int)tankEnemy.tankPosition.X;
                     int yPos = (int)tankEnemy.tankPosition.Y;
 
-                    Matrix tankEnemyMat = Matrix.CreateTranslation(0, -20, 0) *  Matrix.CreateTranslation(xPos, yPos, 0);
+                    Matrix tankEnemyMat = Matrix.CreateTranslation(0, -20, 0) * Matrix.CreateTranslation(xPos, yPos, 0);
                     Vector2 tankEnemCollisionPoint = TexturesCollide(tankEnemy.tankColorArray, tankEnemyMat, tank.myBullet.bulletColorArray, bulletMat);
-                   
+
                     if (tankEnemCollisionPoint.X != -1)
-	                {
+                    {
                         tankEnemy.isAlive = false;
+                        tanksAlive--;
                         return tankEnemCollisionPoint;
                     }
 

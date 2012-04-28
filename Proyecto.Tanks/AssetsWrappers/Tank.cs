@@ -146,7 +146,7 @@ namespace Proyecto.Tanks.AssetsWrappers
         /// </summary>
         private string assetName = "tank";
         private string bulletAssetName = "bullet";
-        private Color tankColor;
+        public Color tankColor;
         private Texture2D tank;
         private Rectangle spriteToDraw;
         public bool isAlive;
@@ -425,5 +425,6 @@ namespace Proyecto.Tanks.AssetsWrappers
         {
             this.canMove = !stopMoving;
         }
+
     }
 }
