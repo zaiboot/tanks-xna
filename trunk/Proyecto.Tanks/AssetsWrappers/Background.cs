@@ -88,17 +88,19 @@ namespace Proyecto.Tanks.AssetsWrappers
                 }
             }
 
-            //for (int x = 0; x < 60; x++)
-            //{
-            //    for (int y = 0; y < 60; y++)
-            //    {
+            for (int i = 0; i < 100; i++)
+            {
+                int xRandom = randomizer.Next(0, width - 60);
+                int yRandom = randomizer.Next(0, height - 60);
 
-            //    }
-            //}
-
-
-            //int yRandom = randomizer.Next(0, height);
-
+                for (int x = xRandom; x < xRandom + 60; x++)
+                {
+                    for (int y = yRandom; y < yRandom + 60; y++)
+                    {
+                        terrainContour[x, y] = 1000;
+                    }
+                }
+            }
         }
     }
 }
