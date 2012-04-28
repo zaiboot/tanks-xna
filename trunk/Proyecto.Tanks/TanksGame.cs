@@ -20,10 +20,10 @@ namespace Proyecto.Tanks
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private List<BaseAsset> assetsToDraw = new List<BaseAsset>();
-        
+
         private List<Tank> tanks;
         private Background obstacles;
-        
+
         private const int MAX_NUMBER_TANKS = 4;
 
         public TanksGame()
@@ -33,15 +33,15 @@ namespace Proyecto.Tanks
             #region TANK_CREATION
 
             tanks = new List<Tank>();
-            
+
             for (int i = 0; i < MAX_NUMBER_TANKS; i++)
             {
                 tanks.Add(new Tank(this, (PlayerIndex)i));
             }
-            
+
             #endregion
             obstacles = new Background(this);
-            
+
             assetsToDraw.Add(obstacles);
             assetsToDraw.AddRange(tanks);
         }
@@ -133,7 +133,7 @@ namespace Proyecto.Tanks
             }
 
             obstacles.CreateForeground();
-            
+
             base.Draw(gameTime);
         }
 
@@ -141,11 +141,13 @@ namespace Proyecto.Tanks
         {
             foreach (Tank tank in tanks)
             {
-                Vector2 bulletTerrainCollisionPoint = CheckBulletTerrainCollision(tank);
+
                 Vector2 tankTerrainCollisionPoint = CheckTankTerrainCollision(tank);
 
                 if (tank.myBullet.IsBulletVisible)
                 {
+                    //We do not need to check the collision only when the bullet is visible.
+                    Vector2 bulletTerrainCollisionPoint = CheckBulletTerrainCollision(tank);
                     if (bulletTerrainCollisionPoint.X > -1)
                     {
                         tank.myBullet.IsBulletVisible = false;
@@ -184,7 +186,7 @@ namespace Proyecto.Tanks
                 }
             }
         }
-        
+
         private Vector2 TexturesCollide(Color[,] tex1, Matrix mat1, Color[,] tex2, Matrix mat2)
         {
             Matrix mat1to2 = mat1 * Matrix.Invert(mat2);
@@ -224,9 +226,10 @@ namespace Proyecto.Tanks
 
         private Vector2 CheckBulletTerrainCollision(Tank tank)
         {
+            Vector2 terrainCollisionPoint = new Vector2(-1, -1);
             Matrix bulletMat = Matrix.CreateRotationZ(tank.myBullet.rotationAngle) * Matrix.CreateTranslation(tank.myBullet.bulletPosition.X, tank.myBullet.bulletPosition.Y, 0);
             Matrix obstaclesMat = Matrix.Identity;
-            Vector2 terrainCollisionPoint = TexturesCollide(tank.myBullet.bulletColorArray, bulletMat, obstacles.backgroundColorArray, obstaclesMat);
+            terrainCollisionPoint = TexturesCollide(tank.myBullet.bulletColorArray, bulletMat, obstacles.backgroundColorArray, obstaclesMat);
             return terrainCollisionPoint;
         }
 
