@@ -41,11 +41,12 @@ namespace Proyecto.Tanks
             {
                 tanks.Add(new Tank(this, (PlayerIndex)i));
             }
+            
             #endregion
             obstacles = new Background(this);
             
             assetsToDraw.Add(obstacles);
-            assetsToDraw.Add(singleTank);
+            assetsToDraw.AddRange(tanks);
 
         }
 
