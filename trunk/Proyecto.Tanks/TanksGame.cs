@@ -22,7 +22,7 @@ namespace Proyecto.Tanks
         private List<BaseAsset> assetsToDraw = new List<BaseAsset>();
         private Tank singleTank;
         private Background obstacles;
-        private Explosion explosion;
+        
 
 
         public TanksGame()
@@ -31,10 +31,10 @@ namespace Proyecto.Tanks
             Content.RootDirectory = "Assets";
             singleTank = new Tank(this);
             obstacles = new Background(this);
-            explosion = new Explosion(this);
+            
             assetsToDraw.Add(obstacles);
             assetsToDraw.Add(singleTank);
-            assetsToDraw.Add(explosion);
+
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace Proyecto.Tanks
             }
             spriteBatch.End();
 
-            explosion.DrawExplosion(spriteBatch);
+            singleTank.explosion.DrawExplosion(spriteBatch);
 
             base.Draw(gameTime);
         }
@@ -133,7 +133,7 @@ namespace Proyecto.Tanks
                 if (bulletTerrainCollisionPoint.X > -1)
                 {
                     singleTank.myBullet.IsBulletVisible = false;
-                    explosion.AddExplosion(bulletTerrainCollisionPoint, 4, 30.0f, 1000.0f, gameTime);
+                    singleTank.explosion.AddExplosion(bulletTerrainCollisionPoint, 4, 30.0f, 1000.0f, gameTime);
                 }
             }
 
