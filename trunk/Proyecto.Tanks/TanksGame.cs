@@ -23,6 +23,7 @@ namespace Proyecto.Tanks
 
         private List<Tank> tanks;
         private Background obstacles;
+        private SoundEffect winGame;
 
         private const int MAX_NUMBER_TANKS = 4;
         private int tanksAlive = MAX_NUMBER_TANKS;
@@ -76,6 +77,7 @@ namespace Proyecto.Tanks
                 asset.LoadResources(Content);
             }
             font = Content.Load<SpriteFont>("Courier New");
+            winGame = Content.Load<SoundEffect>("WinGame");
             // TODO: use this.Content to load your game content here
         }
 
@@ -116,10 +118,12 @@ namespace Proyecto.Tanks
                     if (singleTank.isAlive)
                     {
                         tankWinner = singleTank;
+
                         break;
 
                     }
                 }
+                winGame.Play();
                 GameEnd = true;
             }
             base.Update(gameTime);
@@ -185,6 +189,7 @@ namespace Proyecto.Tanks
                                 playerTank.myBullet.IsBulletVisible = false;
                                 Matrix mat = playerTank.explosion.AddExplosion(bulletTerrainCollisionPoint, 4, 30.0f, 1000.0f, gameTime);
                                 AddCrater(playerTank.explosion.explosionColorArray, mat);
+                                obstacles.hitTerrain.Play();
                                 obstacles.CreateForeground();
                             }
 
@@ -310,7 +315,9 @@ namespace Proyecto.Tanks
                     if (tankEnemCollisionPoint.X != -1)
                     {
                         tankEnemy.isAlive = false;
+                        tankEnemy.hitTank.Play();
                         tanksAlive--;
+
                         return tankEnemCollisionPoint;
                     }
 
