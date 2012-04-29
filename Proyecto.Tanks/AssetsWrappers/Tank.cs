@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Proyecto.Tanks.AssetsWrappers
 {
@@ -174,6 +175,8 @@ namespace Proyecto.Tanks.AssetsWrappers
 
         private Game owner;
         public Explosion explosion;
+        public SoundEffect tankFire;
+        public SoundEffect hitTank;
 
         #region INTERACTION_KEYS
         private Keys DOWN_KEY;
@@ -241,12 +244,16 @@ namespace Proyecto.Tanks.AssetsWrappers
 
             tankColorArray = Utils.TextureTo2DArray(tank);
             myBullet.bulletColorArray = Utils.TextureTo2DArray(myBullet.bullet);
+
+            tankFire = content.Load<SoundEffect>("TankFiring");
+            hitTank = content.Load<SoundEffect>("hitTank");
+
             explosion.LoadResources(content);            //The size needs to be loaded here, since if it loads in the ctor it will
             //not be set up correctly.
             int width = owner.Window.ClientBounds.Width;
             int height = owner.Window.ClientBounds.Height;
             //One two three four
-            //http://www.youtube.com/watch?v=BzZtU2jFs7g
+            //http://www.youtube.com/watch?v=BzZtU2jFs7g  ?????????????????????
 
             switch (playerIndex)
             {
@@ -291,6 +298,7 @@ namespace Proyecto.Tanks.AssetsWrappers
                     //Shoot only one bullet at the time
                     if (pressedKeys.Contains(FIRE_KEY))
                     {
+                        tankFire.Play();
                         myBullet.Start(this);
                     }
                 }

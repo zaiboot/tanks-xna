@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Proyecto.Tanks.AssetsWrappers
 {
@@ -30,6 +31,7 @@ namespace Proyecto.Tanks.AssetsWrappers
         Texture2D brick;
         Texture2D backgroundTexture;
         public Color[,] backgroundColorArray;
+        public SoundEffect hitTerrain;
 
         public Background(Game owner)
         {
@@ -39,6 +41,7 @@ namespace Proyecto.Tanks.AssetsWrappers
         public override void LoadResources(Microsoft.Xna.Framework.Content.ContentManager content)
         {
             brick = content.Load<Texture2D>("brick");
+            hitTerrain = content.Load<SoundEffect>("hitTerrain");
             width = owner.Window.ClientBounds.Width;
             height = owner.Window.ClientBounds.Height;
 
